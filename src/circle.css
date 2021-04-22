@@ -1,0 +1,10 @@
+.circle{
+  width: 100px;
+  height: 65px;
+  border-radius: 65px/45px;
+  border-style: solid;
+  border-width: 0.2px;
+  margin-bottom: 10px;
+  background-image: url("https://i.pinimg.com/originals/ff/4c/4d/ff4c4ddb22e768c376b18b2c0f5a907d.jpg");
+  background-size: cover;
+}
