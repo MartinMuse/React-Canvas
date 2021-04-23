@@ -69,7 +69,7 @@ function App() {
     element.onmouseup = function () {
       document.removeEventListener('mousemove', onMouseMove);
       element.onmouseup = null;
-      if (e.pageX <= canvasFieldX1) {
+      if (element.getBoundingClientRect().left <= canvasFieldX1) {
         moveAt(canvasFieldX1+shiftX+2,element.getBoundingClientRect().top+shiftY);
       }
     };
