@@ -17,19 +17,21 @@ function App() {
     const canvasFieldX2 = secondColumnRef.current.getBoundingClientRect().right
     const canvasFieldY1 = secondColumnRef.current.getBoundingClientRect().top
     const canvasFieldY2 = secondColumnRef.current.getBoundingClientRect().bottom
-    const figuresFieldX1=firstColumnRef.current.getBoundingClientRect().left
-    const figureWidth=100;
-    const figureHeight=65;
+    const figuresFieldX1 = firstColumnRef.current.getBoundingClientRect().left
+    const figureWidth = 100;
+    const figureHeight = 65;
 
     element.style.position = 'absolute';
     element.style.zIndex = 1000;
-    document.body.append(element);
-
-    if (type === "circle") {
-      setCircles((prev) => [...prev, circles.length + 1])
-    } else if (type === "parallelogramm") {
-      setParallels((prev) => [...prev, parallels.length + 1])
+    firstColumnRef.current.append(element);
+    if (element.getBoundingClientRect().left < canvasFieldX1 ) {
+      if (type === "circle") {
+        setCircles((prev) => [...prev, circles.length + 1])
+      } else if (type === "parallelogramm") {
+        setParallels((prev) => [...prev, parallels.length + 1])
+      }
     }
+    console.log(e.pageX)
     moveAt(e.pageX, e.pageY);
 
     function moveAt(pageX, pageY) {
@@ -38,39 +40,44 @@ function App() {
     }
 
     function onMouseMove(e) {
-      //check of the moving-out-of-boundary situations
-      if (e.pageY >= canvasFieldY2 + shiftY - figureHeight && e.pageX >= canvasFieldX2 + shiftX - figureWidth){
+      if ((e.pageY >= canvasFieldY2 + shiftY - figureHeight) && (e.pageX >= canvasFieldX2 + shiftX - figureWidth)
+          && (e.pageX < canvasFieldX2)){
         moveAt(canvasFieldX2 + shiftX - figureWidth, canvasFieldY2 + shiftY - figureHeight)
       }
-      else if (e.pageY <= canvasFieldY1 + shiftY && e.pageX >= canvasFieldX2 + shiftX - figureWidth) {
+      else if ((e.pageY <= canvasFieldY1 + shiftY) && (e.pageX >= canvasFieldX2 + shiftX - figureWidth)
+          && (e.pageY > canvasFieldY1) && (e.pageX < canvasFieldX2)) {
+        console.log((e.pageX < canvasFieldX2))
         moveAt(canvasFieldX2 + shiftX - figureWidth, canvasFieldY1 + shiftY)
       }
-      else if (e.pageY <= canvasFieldY1 + shiftY && e.pageX <= figuresFieldX1 + shiftX) {
+      else if ((e.pageY <= canvasFieldY1 + shiftY) && (e.pageX <= figuresFieldX1 + shiftX) && (e.pageX > figuresFieldX1)) {
         moveAt(figuresFieldX1 + shiftX, canvasFieldY1 + shiftY)
       }
-      else if (e.pageY >= canvasFieldY2 - figureHeight + shiftY && e.pageX <= figuresFieldX1 + shiftX) {
+      else if ((e.pageY >= canvasFieldY2 - figureHeight + shiftY) && (e.pageX <= figuresFieldX1 + shiftX)  && (e.pageX > figuresFieldX1)) {
         moveAt(figuresFieldX1 + shiftX, canvasFieldY2 + shiftY - figureHeight)
       }
-      else if (e.pageY <= canvasFieldY1 + shiftY) {
+      else if ((e.pageY <= canvasFieldY1 + shiftY) && (e.pageY > canvasFieldY1)&&(e.pageX < canvasFieldX2)) {
         moveAt(e.pageX, canvasFieldY1 + shiftY)
       }
-      else if (e.pageY >= canvasFieldY2 + shiftY - figureHeight) {
+      else if ((e.pageY >= canvasFieldY2 + shiftY - figureHeight) && (e.pageY < canvasFieldY2) && (e.pageX < canvasFieldX2)) {
         moveAt(e.pageX, canvasFieldY2 + shiftY - figureHeight)
       }
-      else if (e.pageX >= canvasFieldX2 + shiftX - figureWidth) {
+      else if ((e.pageX >= canvasFieldX2 + shiftX - figureWidth)&&(e.pageX < canvasFieldX2)) {
         moveAt(canvasFieldX2 + shiftX - figureWidth, e.pageY);
       }
-      else if (e.pageX <= figuresFieldX1 + shiftX) {
+      else if ((e.pageX <= figuresFieldX1 + shiftX) &&(e.pageX > figuresFieldX1)) {
         moveAt(figuresFieldX1 + shiftX, e.pageY);
-      } else moveAt(e.pageX, e.pageY);
+      } else moveAt(e.pageX, e.pageY)
+
+
     }
+
     document.addEventListener('mousemove', onMouseMove);
 
     element.onmouseup = function () {
       document.removeEventListener('mousemove', onMouseMove);
       element.onmouseup = null;
       if (element.getBoundingClientRect().left <= canvasFieldX1) {
-        moveAt(canvasFieldX1+shiftX+2,element.getBoundingClientRect().top+shiftY);
+        moveAt(canvasFieldX1 + shiftX + 2, element.getBoundingClientRect().top + shiftY);
       }
     };
   }
