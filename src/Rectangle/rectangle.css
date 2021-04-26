@@ -1,4 +1,4 @@
-.parallelogramm{
+.rectangle{
   width: 100px;
   height: 60px;
   border-style: solid;
@@ -8,6 +8,10 @@
   justify-content: center;
   align-items: center;
   background-color: white;
+}
+
+.rectangle-active{
+
 }
 .red-stripe{
   background-color: red;
