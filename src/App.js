@@ -1,27 +1,17 @@
-import React, {useState, useRef,useEffect} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import {Circle} from "./Circle/circle";
 import {Rectangle} from "./Rectangle/rectangle";
 import "./App.css"
+import {useDispatch, useSelector} from "react-redux";
+import {deleteCircle, setCircles, setCircleXY} from "./Redux/Circles/circleActions";
+import {deleteRect, setRect, setRectXY} from "./Redux/Rectangles/rectangleActions";
 
 function App() {
-  const [circles, setCircles] = useState([Date.now()]) // array of circles' id's
-  const [rectangles, setRectangles] = useState([Date.now() + 1]) // array of rectangles' id's
-  const [orderOfElementsInCanvas,setOrderOfElementsInCanvas]=useState([])
-  // useEffect(() => {
-  //   function checkData() {
-  //     const item = localStorage.getItem('circl')
-  //
-  //     if (item) {
-  //       setUserData(item)
-  //     }
-  //   }
-  //
-  //   window.addEventListener('storage', checkUserData)
-  //
-  //   return () => {
-  //     window.removeEventListener('storage', checkUserData)
-  //   }
-  // }, [])
+  const dispatch = useDispatch()
+  const {circles} = useSelector((state) => state.circlesReducer)
+  const {rectangles} = useSelector((state) => state.rectanglesReducer)
+
+  const [orderOfElementsInCanvas, setOrderOfElementsInCanvas] = useState([])
 
   const [currentActiveEl, setCurrentActiveEl] = useState()
   const [currentZIndex, setCurrentZIndex] = useState(100)
@@ -46,20 +36,20 @@ function App() {
     const figureHeight = 65;
 
 
-    setCurrentZIndex((prev)=>++prev)
+    setCurrentZIndex((prev) => ++prev)
     setCurrentActiveEl(id)
 
     if (element.getBoundingClientRect().left < canvasFieldX1) {
 
       element.style.position = 'absolute';
       element.style.zIndex = currentZIndex;
-      setOrderOfElementsInCanvas((prev)=>[...prev,id])
+      setOrderOfElementsInCanvas((prev) => [...prev, id])
       if (type === "circle") {
         firstColumnContentCircleRef.current.appendChild(element);
-        setCircles((prev) => [...prev, Date.now()])
+        dispatch(setCircles(Date.now()))
       } else if (type === "rectangle") {
         firstColumnContentRectRef.current.appendChild(element);
-        setRectangles((prev) => [...prev, Date.now()])
+        dispatch(setRect(Date.now()))
       }
     }
     moveAt(e.pageX, e.pageY);
@@ -95,7 +85,6 @@ function App() {
     document.addEventListener('mousemove', onMouseMove);
 
     element.onmouseup = function () {
-
       document.removeEventListener('mousemove', onMouseMove);
       element.onmouseup = null;
       //if element is situated in the first column and mouse button is up
@@ -105,16 +94,14 @@ function App() {
       //if element is out of the canvas then delete it
       if ((element.getBoundingClientRect().left < figuresFieldX1) || (element.getBoundingClientRect().right > canvasFieldX2)
           || (element.getBoundingClientRect().top < canvasFieldY1) || (element.getBoundingClientRect().bottom > canvasFieldY2)) {
-        if (type === "circle") {
-          setCircles((prev) => {
-            return prev.filter((el) => el !== id)
-          })
-        } else if (type === "rectangle") {
-          setRectangles((prev) => {
-            return prev.filter((el) => el !== id)
-          })
-        }
-      }
+        if (type === "circle")
+          dispatch(deleteCircle(id))
+        else if (type === "rectangle")
+          dispatch(deleteRect(id))
+      } else if (type === 'circle')
+        dispatch(setCircleXY(id, element.style.left, element.style.top, orderOfElementsInCanvas.indexOf(id)))
+      else if (type === 'rectangle')
+        dispatch(setRectXY(id, element.style.left, element.style.top, orderOfElementsInCanvas.indexOf(id)))
     };
   }
 
@@ -133,22 +120,22 @@ function App() {
           <td className={'first-column'} ref={firstColumnRef}>
             <div className={'first-column__content'}>
               <div className={'first-column__content-circle'} ref={firstColumnContentCircleRef}>
-                {circles.map((id) => <Circle onMouseDownHandler={onMouseDownHandler} id={id} key={id}
+                {circles.map((el) => <Circle onMouseDownHandler={onMouseDownHandler} id={el.id} key={el.id}
                                              setCurrentActiveEl={setCurrentActiveEl}
-                                             isActive={currentActiveEl === id}
+                                             isActive={currentActiveEl === el.id}
                                              setCurrentZIndex={setCurrentZIndex}
                                              currentZIndex={currentZIndex}
-                                             order={()=>orderOfElementsInCanvas.indexOf(id)}
+                                             order={() => el.order}
 
                 />)}
               </div>
               <div className={'first-column__content-rectangle'} ref={firstColumnContentRectRef}>
-                {rectangles.map((id) => <Rectangle onMouseDownHandler={onMouseDownHandler} id={id} key={id}
+                {rectangles.map((el) => <Rectangle onMouseDownHandler={onMouseDownHandler} id={el.id} key={el.id}
                                                    setCurrentActiveEl={setCurrentActiveEl}
-                                                   isActive={currentActiveEl === id}
+                                                   isActive={currentActiveEl === el.id}
                                                    setCurrentZIndex={setCurrentZIndex}
                                                    currentZIndex={currentZIndex}
-                                                   order={()=>orderOfElementsInCanvas.indexOf(id)}/>) }
+                                                   order={() => el.order}/>)}
               </div>
             </div>
           </td>

@@ -1,7 +1,12 @@
 import {DELETE_RECT, SET_RECT, SET_RECT_XY} from "../types";
 
 const initialState = {
-  rectangles: [],
+  rectangles: [{
+    id: 1,
+    order: 0,
+    circleX: 0,
+    circleY: 0
+  }],
 }
 export const rectanglesReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -9,14 +14,14 @@ export const rectanglesReducer = (state = initialState, action) => {
       return {
         rectangles: [...state.rectangles, {
           id: action.payload.id,
-          order: action.payload.order,
           rectangleX: 0,
           rectangleY: 0,
         }]
       }
     case DELETE_RECT:
+      const result = state.rectangles.filter((el) => el.id !== action.payload.id)
       return {
-        rectangles: state.filter((el) => el.id !== action.id)
+        rectangles: result
       }
     case SET_RECT_XY: {
       let rectangles = state.rectangles
@@ -25,10 +30,11 @@ export const rectanglesReducer = (state = initialState, action) => {
       if (index !== -1)
         rectangles[index] = {
           ...rectangles[index],
-          rectangleX: action.action.rectangleX,
-          rectangleY: action.action.rectangleY
+          rectangleX: action.payload.rectangleX,
+          rectangleY: action.payload.rectangleY,
+          order: action.payload.order
         }
-      return { rectangles: rectangles}
+      return {rectangles: rectangles}
     }
     default:
       return state
