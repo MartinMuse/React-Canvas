@@ -1,0 +1,6 @@
+export const SET_CIRCLE = 'SET_CIRCLE'
+export const DELETE_CIRCLE = 'DELETE_CIRCLE'
+export const SET_CIRCLE_XY = 'SET_CIRCLE_XY'
+export const SET_RECT = 'SET_RECT'
+export const DELETE_RECT = 'DELETE_RECT'
+export const SET_RECT_XY = 'SET_RECT_XY'

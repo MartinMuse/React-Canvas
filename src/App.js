@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef,useEffect} from 'react'
 import {Circle} from "./Circle/circle";
 import {Rectangle} from "./Rectangle/rectangle";
 import "./App.css"
@@ -7,6 +7,21 @@ function App() {
   const [circles, setCircles] = useState([Date.now()]) // array of circles' id's
   const [rectangles, setRectangles] = useState([Date.now() + 1]) // array of rectangles' id's
   const [orderOfElementsInCanvas,setOrderOfElementsInCanvas]=useState([])
+  // useEffect(() => {
+  //   function checkData() {
+  //     const item = localStorage.getItem('circl')
+  //
+  //     if (item) {
+  //       setUserData(item)
+  //     }
+  //   }
+  //
+  //   window.addEventListener('storage', checkUserData)
+  //
+  //   return () => {
+  //     window.removeEventListener('storage', checkUserData)
+  //   }
+  // }, [])
 
   const [currentActiveEl, setCurrentActiveEl] = useState()
   const [currentZIndex, setCurrentZIndex] = useState(100)
